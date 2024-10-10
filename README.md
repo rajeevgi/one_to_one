@@ -22,5 +22,5 @@ Before you begin, ensure you have met the following requirements:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/your-repository-name.git
+   git clone https://github.com/rajeevgi/one_to_one.git
    cd your-repository-name
