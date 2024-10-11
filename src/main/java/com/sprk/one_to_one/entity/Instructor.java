@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Entity
@@ -19,4 +21,8 @@ public class Instructor {
     private String lastName;
 
     private String phone;
+
+    @OneToOne(/*cascade = {CascadeType.ALL}*/)       // One to one relationship/mapping
+    @JoinColumn(name = "instructor_detail_id")
+    private InstructorDetails instructorDetails;
 }
