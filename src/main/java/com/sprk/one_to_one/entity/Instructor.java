@@ -22,7 +22,7 @@ public class Instructor {
 
     private String phone;
 
-    @OneToOne(/*cascade = {CascadeType.ALL}*/)       // One to one relationship/mapping
+    @OneToOne(/*cascade = {CascadeType.ALL, orphanRemoval = true}*/)       // One to one relationship/mapping
     @JoinColumn(name = "instructor_detail_id")
     private InstructorDetails instructorDetails;
 }

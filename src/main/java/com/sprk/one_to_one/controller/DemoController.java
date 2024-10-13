@@ -1,8 +1,13 @@
 package com.sprk.one_to_one.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,9 +34,60 @@ public class DemoController {
         return appDao.saveInstructor(instructor);
     }
 
-    // Get Mapping
-    @GetMapping("/show-Instructor/{id}")
-    public Instructor getInstructorById(@PathVariable int id){
-        return null;
+    // Get Mapping to get instructor by id
+    @GetMapping("/showInstructors/{id}")
+    public ResponseEntity<Instructor> getInstructorById(@PathVariable int id){
+
+        Instructor instructor = appDao.findByInstructorId(id);
+
+        if(instructor == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(instructor);
+    }
+
+    // Get mapping to get list of all instructors
+    @GetMapping("/instructors")
+    public ResponseEntity<List<Instructor>> getAllInstructors(){
+
+        List<Instructor> instructors = appDao.getAllInstructors();
+
+        return ResponseEntity.ok(instructors);
+    }
+
+    // delete mapping for deletion of instructor details
+    @DeleteMapping("/instructor/{id}")
+    public ResponseEntity<Void> deleteInstructorById(@PathVariable int id){
+
+        Instructor instructor = appDao.findByInstructorId(id);
+    
+        if(instructor == null){
+            return ResponseEntity.notFound().build();   // Id not found
+        }
+
+        appDao.deleteInstructorById(id);
+        return ResponseEntity.noContent().build();   // It will show successfull deletion 
+        
+    }
+
+    // update mapping to change the details
+    @PutMapping("/updateInstructor/{id}")
+    public ResponseEntity<Instructor> updateInstructor(@PathVariable int id, @RequestBody Instructor instructor){
+
+        Instructor ExistingInstructor = appDao.findByInstructorId(id);
+
+        if(ExistingInstructor == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        // updating instructor and instructorDetails fields
+        ExistingInstructor.setFirstName(instructor.getFirstName());
+        ExistingInstructor.setLastName(instructor.getLastName());
+        ExistingInstructor.setPhone(instructor.getPhone());
+        ExistingInstructor.setInstructorDetails(instructor.getInstructorDetails());
+        
+        Instructor instructor2 = appDao.updateInstructorById(ExistingInstructor);
+        return ResponseEntity.ok(instructor2);
     }
 }
