@@ -85,7 +85,19 @@ public class DemoController {
         ExistingInstructor.setFirstName(instructor.getFirstName());
         ExistingInstructor.setLastName(instructor.getLastName());
         ExistingInstructor.setPhone(instructor.getPhone());
-        ExistingInstructor.setInstructorDetails(instructor.getInstructorDetails());
+
+        // logic to get details of instructor details
+        if(instructor.getInstructorDetails() != null){
+            InstructorDetails updatedDetails = instructor.getInstructorDetails();  // save the instructor details
+
+            if(updatedDetails.getInstructorDetailId() == 0){        // Get the id of instructorDetails
+                appDao.saveInstructorDetails(updatedDetails);
+            }else{
+                appDao.updateInstructorDetails(updatedDetails);
+            }
+
+            ExistingInstructor.setInstructorDetails(updatedDetails);
+        }
         
         Instructor instructor2 = appDao.updateInstructorById(ExistingInstructor);
         return ResponseEntity.ok(instructor2);

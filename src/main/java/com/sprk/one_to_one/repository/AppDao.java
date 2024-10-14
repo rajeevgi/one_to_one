@@ -19,12 +19,12 @@ public class AppDao {
     private final EntityManager entityManager;
 
     @Transactional
-    public Instructor saveInstructor(Instructor instructor){
+    public Instructor saveInstructor(Instructor instructor) {
         return entityManager.merge(instructor);
     }
 
     @Transactional
-    public InstructorDetails saveInstructorDetails(InstructorDetails instructorDetails){
+    public InstructorDetails saveInstructorDetails(InstructorDetails instructorDetails) {
         return entityManager.merge(instructorDetails);
     }
 
@@ -35,25 +35,28 @@ public class AppDao {
     }
 
     @Transactional
-    public List<Instructor> getAllInstructors(){
+    public List<Instructor> getAllInstructors() {
         return entityManager.createQuery("select i from Instructor i", Instructor.class).getResultList();
     }
 
     @Transactional
-    public void deleteInstructorById(int id){
+    public void deleteInstructorById(int id) {
 
         Instructor instructor = entityManager.find(Instructor.class, id);
 
-        if(instructor != null){
+        if (instructor != null) {
             entityManager.remove(instructor);
+            entityManager.remove(instructor.getInstructorDetails());
         }
     }
 
     @Transactional
-    public Instructor updateInstructorById(Instructor instructor){
-
-        // Instructor instructor = findByInstructorId(id);
-        
+    public Instructor updateInstructorById(Instructor instructor) {
         return entityManager.merge(instructor);
+    }
+
+    @Transactional
+    public InstructorDetails updateInstructorDetails(InstructorDetails instructorDetails){
+        return entityManager.merge(instructorDetails);
     }
 }
