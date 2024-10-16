@@ -1,5 +1,8 @@
 package com.sprk.one_to_one.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +25,8 @@ public class Instructor {
 
     private String phone;
 
-    @OneToOne(/*cascade = {CascadeType.ALL, orphanRemoval = true}*/)       // One to one relationship/mapping
+    @OneToOne(cascade = {CascadeType.ALL})       // One to one relationship/mapping
     @JoinColumn(name = "instructor_detail_id")
+    @JsonManagedReference
     private InstructorDetails instructorDetails;
 }

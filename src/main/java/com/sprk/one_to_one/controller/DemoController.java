@@ -23,83 +23,69 @@ public class DemoController {
 
     private final AppDao appDao;
 
-    // Save Mapping
+    // Post Mapping to add instructor and InstructorDetail
     @PostMapping("/save")
-    public Instructor saveInstructor(@RequestBody Instructor instructor){
-
-        InstructorDetails details = instructor.getInstructorDetails();
-        details = appDao.saveInstructorDetails(details);
-
-        instructor.setInstructorDetails(details);
+    public Instructor saveInstructor(@RequestBody Instructor instructor) {
         return appDao.saveInstructor(instructor);
+    }
+
+    @PostMapping("/addDetail")
+        public Instructor saveInstructorDetail(@RequestBody InstructorDetails instructorDetails){
+            Instructor instructor = instructorDetails.getInstructor();
+            instructor.setInstructorDetails(instructorDetails);
+
+            return appDao.saveInstructor(instructor);
     }
 
     // Get Mapping to get instructor by id
     @GetMapping("/showInstructors/{id}")
-    public ResponseEntity<Instructor> getInstructorById(@PathVariable int id){
+    public Instructor getInstructorById(@PathVariable int id) {
 
-        Instructor instructor = appDao.findByInstructorId(id);
+        return appDao.findByInstructorId(id);
+    }
 
-        if(instructor == null){
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(instructor);
+    // Get InstructorDetail by Id
+    @GetMapping("/getInstructorDetail/{id}")
+    public InstructorDetails getInstructorDetailsById(@PathVariable int id){
+        return appDao.findInstructorDetailById(id);
     }
 
     // Get mapping to get list of all instructors
     @GetMapping("/instructors")
-    public ResponseEntity<List<Instructor>> getAllInstructors(){
+    public List<Instructor> getAllInstructors() {
 
         List<Instructor> instructors = appDao.getAllInstructors();
 
-        return ResponseEntity.ok(instructors);
+        return instructors;
+
     }
 
     // delete mapping for deletion of instructor details
     @DeleteMapping("/instructor/{id}")
-    public ResponseEntity<Void> deleteInstructorById(@PathVariable int id){
+    public String deleteInstructorById(@PathVariable int id) {
 
-        Instructor instructor = appDao.findByInstructorId(id);
-    
-        if(instructor == null){
-            return ResponseEntity.notFound().build();   // Id not found
-        }
+        String message = appDao.deleteInstructorById(id);
 
-        appDao.deleteInstructorById(id);
-        return ResponseEntity.noContent().build();   // It will show successfull deletion 
-        
+        return message;
+
     }
 
     // update mapping to change the details
     @PutMapping("/updateInstructor/{id}")
-    public ResponseEntity<Instructor> updateInstructor(@PathVariable int id, @RequestBody Instructor instructor){
+    public Instructor updateByInstructorId(@PathVariable int id, @RequestBody Instructor instructor){
+        Instructor savedInstructor = appDao.findByInstructorId(id);
 
-        Instructor ExistingInstructor = appDao.findByInstructorId(id);
+        if(savedInstructor != null){
+            InstructorDetails updateInstructorDetails = instructor.getInstructorDetails();
 
-        if(ExistingInstructor == null){
-            return ResponseEntity.notFound().build();
+            updateInstructorDetails.setInstructorDetailId(savedInstructor.getInstructorDetails().getInstructorDetailId());
+
+            instructor.setInstructorId(savedInstructor.getInstructorId());
+            instructor.setInstructorDetails(updateInstructorDetails);
+
+            return appDao.saveInstructor(instructor);
+        }else{
+            return null;
         }
-
-        // updating instructor and instructorDetails fields
-        ExistingInstructor.setFirstName(instructor.getFirstName());
-        ExistingInstructor.setLastName(instructor.getLastName());
-        ExistingInstructor.setPhone(instructor.getPhone());
-
-        // logic to get details of instructor details
-        if(instructor.getInstructorDetails() != null){
-            InstructorDetails updatedDetails = instructor.getInstructorDetails();  // save the instructor details
-
-            if(updatedDetails.getInstructorDetailId() == 0){        // Get the id of instructorDetails
-                appDao.saveInstructorDetails(updatedDetails);
-            }else{
-                appDao.updateInstructorDetails(updatedDetails);
-            }
-
-            ExistingInstructor.setInstructorDetails(updatedDetails);
-        }
-        
-        Instructor instructor2 = appDao.updateInstructorById(ExistingInstructor);
-        return ResponseEntity.ok(instructor2);
     }
 }

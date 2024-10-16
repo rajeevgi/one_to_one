@@ -15,41 +15,54 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AppDao {
 
-    @PersistenceContext
+    // @PersistenceContext
     private final EntityManager entityManager;
 
+    // Save Mapping to add instructor
     @Transactional
     public Instructor saveInstructor(Instructor instructor) {
         return entityManager.merge(instructor);
     }
 
+    // Save mapping to add instructorDetail
     @Transactional
     public InstructorDetails saveInstructorDetails(InstructorDetails instructorDetails) {
         return entityManager.merge(instructorDetails);
     }
 
+    // Get mapping to fetch Instructor by Id
     @Transactional
     public Instructor findByInstructorId(int id) {
         // TODO Auto-generated method stub
         return entityManager.find(Instructor.class, id);
     }
 
+    // Get Mapping to fetch InstructorDetail by Id
+    public InstructorDetails findInstructorDetailById(int id) {
+        return entityManager.find(InstructorDetails.class, id);
+    }
+
+    // Get mapping to get fetch List of Instructors
     @Transactional
     public List<Instructor> getAllInstructors() {
         return entityManager.createQuery("select i from Instructor i", Instructor.class).getResultList();
     }
 
+    // Delete mapping to remove instructor by Id
     @Transactional
-    public void deleteInstructorById(int id) {
+    public String deleteInstructorById(int id) {
 
-        Instructor instructor = entityManager.find(Instructor.class, id);
+        Instructor instructor = findByInstructorId(id);
 
         if (instructor != null) {
             entityManager.remove(instructor);
-            entityManager.remove(instructor.getInstructorDetails());
+            return "Deleted Successfully";
+        }else{
+            return "Something went wrong";
         }
     }
 
+    // Put Mapping to update info of Instructor and InstructorDetail by Id
     @Transactional
     public Instructor updateInstructorById(Instructor instructor) {
         return entityManager.merge(instructor);
@@ -59,4 +72,5 @@ public class AppDao {
     public InstructorDetails updateInstructorDetails(InstructorDetails instructorDetails){
         return entityManager.merge(instructorDetails);
     }
+    
 }
