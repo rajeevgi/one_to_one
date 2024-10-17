@@ -2,7 +2,6 @@ package com.sprk.one_to_one.controller;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,7 +59,7 @@ public class DemoController {
 
     }
 
-    // delete mapping for deletion of instructor details
+    // delete mapping for Instructor 
     @DeleteMapping("/instructor/{id}")
     public String deleteInstructorById(@PathVariable int id) {
 
@@ -68,6 +67,15 @@ public class DemoController {
 
         return message;
 
+    }
+
+    // Delete mapping for InstructorDetail
+    @DeleteMapping("/instructorDetailDelete/{id}")
+    public String deleteInstructorDetailById(@PathVariable int id){
+
+        String message = appDao.deleteInstructorDetailById(id);
+
+        return message;
     }
 
     // update mapping to change the details
@@ -87,5 +95,12 @@ public class DemoController {
         }else{
             return null;
         }
+    }
+
+    // update mapping for instructor details which is deleted
+    @PutMapping("/updateInstructorDetail/{id}")
+    public Instructor updateInstructorDetails(@RequestBody InstructorDetails instructorDetails,@PathVariable int id){
+
+        return appDao.updateInstructorDetails(id, instructorDetails);       
     }
 }

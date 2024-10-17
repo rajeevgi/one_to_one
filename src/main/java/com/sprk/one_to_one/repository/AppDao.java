@@ -7,7 +7,6 @@ import com.sprk.one_to_one.entity.Instructor;
 import com.sprk.one_to_one.entity.InstructorDetails;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -62,6 +61,24 @@ public class AppDao {
         }
     }
 
+    // Delete mapping for InstructorDetail
+    @Transactional
+    public String deleteInstructorDetailById(int id) {
+        
+        InstructorDetails instructorDetails = entityManager.find(InstructorDetails.class, id);
+
+        if(instructorDetails != null){
+            Instructor instructor = instructorDetails.getInstructor();
+            instructor.setInstructorDetails(null);
+            entityManager.remove(instructorDetails);
+            return "Delete Successfully";
+        }else{
+            return " Something went wrong";
+        }
+
+    }
+
+
     // Put Mapping to update info of Instructor and InstructorDetail by Id
     @Transactional
     public Instructor updateInstructorById(Instructor instructor) {
@@ -72,5 +89,17 @@ public class AppDao {
     public InstructorDetails updateInstructorDetails(InstructorDetails instructorDetails){
         return entityManager.merge(instructorDetails);
     }
-    
+
+    @Transactional
+    public Instructor updateInstructorDetails(int id, InstructorDetails instructorDetails) {
+        Instructor instructor = entityManager.find(Instructor.class, id);
+
+        if(instructor != null){
+            instructor.setInstructorDetails(instructorDetails);
+            return entityManager.merge(instructor);
+        }else{
+            return null;
+        }
+    }
+
 }
